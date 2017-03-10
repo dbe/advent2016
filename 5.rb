@@ -5,7 +5,7 @@ def main()
   #prefix = "abc"
 
   i = 0
-  password = ""
+  password = "zzzzzzzz"
 
   while true
     if(i % 1000000 == 0)
@@ -16,11 +16,15 @@ def main()
     hash_value = Digest::MD5.hexdigest(input)
 
     if(interesting_hash(hash_value))
-      password << extract_password_char(hash_value)
-      
-      puts "Found char. Password is now: #{password}"
+      password_char = extract_password_char(hash_value)
+      password_location = extract_password_location(hash_value)
 
-      break if password.length == 8
+      if(valid_location?(password_location, password))
+         password[password_location.to_i] = password_char
+         puts "Found valid password character. Password is now: #{password}"
+      end
+
+      break if !password.include?('z')
     end
 
     i+=1
@@ -34,7 +38,15 @@ def interesting_hash(h)
 end
 
 def extract_password_char(h)
+  return h[6]
+end
+
+def extract_password_location(h)
   return h[5]
+end
+
+def valid_location?(loc, pw)
+  return ['0','1','2','3','4','5','6','7'].include?(loc) && pw[loc.to_i] == 'z'
 end
 
 main()
