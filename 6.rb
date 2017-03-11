@@ -2,7 +2,7 @@ def deduce_message(char_map_by_pos)
   message = ""
 
   char_map_by_pos.each do |char_map|
-    sorted = char_map.sort_by {|char, count| -count}
+    sorted = char_map.sort_by {|char, count| count}
     message << sorted[0][0].to_s
   end
 
