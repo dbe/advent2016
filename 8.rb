@@ -14,6 +14,10 @@ class LCD
     end
   end
 
+  def on_count
+    @data.reduce(0) {|sum, row| sum + row.count(true)}
+  end
+
   def to_s
     s = ""
 
@@ -36,16 +40,27 @@ end
 
 def main()
   lcd = LCD.new
-  lcd.rect(3,2)
-  puts lcd
 
-  while (input = gets.chomp) != ''
-    method, args = parse_input(input)
+  File.open('8.1.txt', 'r') do |file|
+    while !file.eof?
+      method, args = parse_input(file.gets.chomp)
+      if(method)
+        puts "Found method: #{method}"
+        puts "args: #{args}"
+        lcd.send(method, *args)
+      end
+    end
   end
+
+  puts lcd
+  puts "On count: #{lcd.on_count}"
 end
 
+RECT_REGEX = /rect (\d+)x(\d+)/
 def parse_input(input)
-
+  if(match = input.match(RECT_REGEX))
+    return :rect, [match.captures[0].to_i, match.captures[1].to_i]
+  end
 end
 
 
